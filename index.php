@@ -36,9 +36,12 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
     // Check if the new order status is "processing"
     if ( 'processing' === $new_status ) {
         // Replace "unknown" with your actual Bearer token and username and access key
-        $bearer_token = '5f39b5d6-b51f-3cd6-928a-0882ea03fa63';
-        $username = 'admin@scout.com.mv';
-        $access_key = 'QzdnSXVINXpabm9hc2R3TGpLV1B3ekxrWDdZamE2azhCSWhtVlk1Q2tQVERFMkxoM0d3Wm8yQUNoZW55RVk3WA==';
+//        $bearer_token = '5f39b5d6-b51f-3cd6-928a-0882ea03fa63';
+//        $username = 'admin@scout.com.mv';
+//        $access_key = 'QzdnSXVINXpabm9hc2R3TGpLV1B3ekxrWDdZamE2azhCSWhtVlk1Q2tQVERFMkxoM0d3Wm8yQUNoZW55RVk3WA==';
+        $bearer_token = get_option( 'my_plugin_bearer_token' );
+        $username = get_option( 'my_plugin_username' );
+        $access_key = get_option( 'my_plugin_access_key' );
 
         // Get the phone number and first name for the order
         $order = wc_get_order( $order_id );
@@ -81,3 +84,50 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
     }
 }
 add_action( 'woocommerce_order_status_changed', 'send_sms_notification', 10, 3 );
+
+
+//VERSION 2
+
+function my_plugin_menu() {
+    add_menu_page( 'My Plugin', 'My Plugin', 'manage_options', 'my-plugin', 'my_plugin_options_page', 'dashicons-admin-generic', 100 );
+}
+add_action( 'admin_menu', 'my_plugin_menu' );
+
+
+function my_plugin_options_page() {
+    ?>
+    <div class="wrap">
+        <h1>My Plugin Options</h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'my_plugin_options' );
+            do_settings_sections( 'my_plugin_options' );
+            ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">Bearer Token</th>
+                    <td><input type="text" name="my_plugin_bearer_token" value="<?php echo esc_attr( get_option( 'my_plugin_bearer_token' ) ); ?>" /></td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Username</th>
+                    <td><input type="text" name="my_plugin_username" value="<?php echo esc_attr( get_option( 'my_plugin_username' ) ); ?>" /></td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Access Key</th>
+                    <td><input type="text" name="my_plugin_access_key" value="<?php echo esc_attr( get_option( 'my_plugin_access_key' ) ); ?>" /></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+function my_plugin_register_settings() {
+    register_setting( 'my_plugin_options', 'my_plugin_bearer_token', 'sanitize_text_field' );
+    register_setting( 'my_plugin_options', 'my_plugin_username', 'sanitize_text_field' );
+    register_setting( 'my_plugin_options', 'my_plugin_access_key', 'sanitize_text_field' );
+}
+add_action( 'admin_init', 'my_plugin_register_settings' );
+
+
