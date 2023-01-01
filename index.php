@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Ooredoo SMS Plugin
 Description: Sends an SMS when a WooCommerce order status is set to "processing" using the Ooredoo SMS Gateway API.
-Version: 1.2
+Version: 2.0
 Author: Mifzaal Abdul Baari
 Author URI: https://islandboy.mv
 */
@@ -36,12 +36,9 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
     // Check if the new order status is "processing"
     if ( 'processing' === $new_status ) {
         // Replace "unknown" with your actual Bearer token and username and access key
-//        $bearer_token = '5f39b5d6-b51f-3cd6-928a-0882ea03fa63';
-//        $username = 'admin@scout.com.mv';
-//        $access_key = 'QzdnSXVINXpabm9hc2R3TGpLV1B3ekxrWDdZamE2azhCSWhtVlk1Q2tQVERFMkxoM0d3Wm8yQUNoZW55RVk3WA==';
-        $bearer_token = get_option( 'my_plugin_bearer_token' );
-        $username = get_option( 'my_plugin_username' );
-        $access_key = get_option( 'my_plugin_access_key' );
+        $bearer_token = get_option( 'woocommerce_ooredoo_sms_bearer_token' );
+        $username = get_option( 'woocommerce_ooredoo_sms_username' );
+        $access_key = get_option( 'woocommerce_ooredoo_sms_access_key' );
 
         // Get the phone number and first name for the order
         $order = wc_get_order( $order_id );
@@ -86,35 +83,36 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
 add_action( 'woocommerce_order_status_changed', 'send_sms_notification', 10, 3 );
 
 
-//VERSION 2
+// Added Admin Page Capabilities
 
-function my_plugin_menu() {
-    add_menu_page( 'My Plugin', 'My Plugin', 'manage_options', 'my-plugin', 'my_plugin_options_page', 'dashicons-admin-generic', 100 );
+// Adds a top-level menu item to the WordPress admin dashboard
+function woocommerce_ooredoo_sms_menu() {
+    add_menu_page( 'WooCommerceOoredooSMS', 'WooCommerceOoredooSMS', 'manage_options', 'woocommerce-ooredoo-sms', 'woocommerce_ooredoo_sms_options_page', 'dashicons-admin-generic', 100 );
 }
-add_action( 'admin_menu', 'my_plugin_menu' );
+add_action( 'admin_menu', 'woocommerce_ooredoo_sms_menu' );
 
-
-function my_plugin_options_page() {
+// Displays the plugin options page
+function woocommerce_ooredoo_sms_options_page() {
     ?>
     <div class="wrap">
-        <h1>My Plugin Options</h1>
+        <h1>WooCommerce Ooredoo SMS Plugin</h1>
         <form action="options.php" method="post">
             <?php
-            settings_fields( 'my_plugin_options' );
-            do_settings_sections( 'my_plugin_options' );
+            settings_fields( 'woocommerce_ooredoo_sms_options' );
+            do_settings_sections( 'woocommerce_ooredoo_sms_options' );
             ?>
             <table class="form-table">
                 <tr valign="top">
                     <th scope="row">Bearer Token</th>
-                    <td><input type="text" name="my_plugin_bearer_token" value="<?php echo esc_attr( get_option( 'my_plugin_bearer_token' ) ); ?>" /></td>
+                    <td><input type="text" name="woocommerce_ooredoo_sms_bearer_token" value="<?php echo esc_attr( get_option( 'woocommerce_ooredoo_sms_bearer_token' ) ); ?>" /></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Username</th>
-                    <td><input type="text" name="my_plugin_username" value="<?php echo esc_attr( get_option( 'my_plugin_username' ) ); ?>" /></td>
+                    <td><input type="text" name="woocommerce_ooredoo_sms_username" value="<?php echo esc_attr( get_option( 'woocommerce_ooredoo_sms_username' ) ); ?>" /></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Access Key</th>
-                    <td><input type="text" name="my_plugin_access_key" value="<?php echo esc_attr( get_option( 'my_plugin_access_key' ) ); ?>" /></td>
+                    <td><input type="text" name="woocommerce_ooredoo_sms_access_key" value="<?php echo esc_attr( get_option( 'woocommerce_ooredoo_sms_access_key' ) ); ?>" /></td>
                 </tr>
             </table>
             <?php submit_button(); ?>
@@ -123,11 +121,12 @@ function my_plugin_options_page() {
     <?php
 }
 
-function my_plugin_register_settings() {
-    register_setting( 'my_plugin_options', 'my_plugin_bearer_token', 'sanitize_text_field' );
-    register_setting( 'my_plugin_options', 'my_plugin_username', 'sanitize_text_field' );
-    register_setting( 'my_plugin_options', 'my_plugin_access_key', 'sanitize_text_field' );
+// Tells WordPress which settings your plugin uses and where to store them in the database.
+function woocommerce_ooredoo_sms_register_settings() {
+    register_setting( 'woocommerce_ooredoo_sms_options', 'woocommerce_ooredoo_sms_bearer_token', 'sanitize_text_field' );
+    register_setting( 'woocommerce_ooredoo_sms_options', 'woocommerce_ooredoo_sms_username', 'sanitize_text_field' );
+    register_setting( 'woocommerce_ooredoo_sms_options', 'woocommerce_ooredoo_sms_access_key', 'sanitize_text_field' );
 }
-add_action( 'admin_init', 'my_plugin_register_settings' );
+add_action( 'admin_init', 'woocommerce_ooredoo_sms_register_settings' );
 
 
