@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Ooredoo SMS Plugin
 Description: Sends an SMS when a WooCommerce order status is set to "processing" using the Ooredoo SMS Gateway API.
-Version: 1.1
+Version: 1.2
 Author: Mifzaal Abdul Baari
 Author URI: https://islandboy.mv
 */
@@ -48,6 +48,9 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
 
         // Format the phone number
         $phone = format_phone_number( $phone );
+
+        // Capitalize the first name
+        $first_name = ucwords( $first_name );
 
         // Set the message and batch variables
         $message = "Dear {$first_name},\nYour order #{$order_id} is ready for pickup at The Scout Association of Maldives.";
