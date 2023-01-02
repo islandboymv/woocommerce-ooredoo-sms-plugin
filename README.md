@@ -1,5 +1,5 @@
 ![Ooredoo Logo](https://upload.wikimedia.org/wikipedia/commons/b/b1/Ooredoo-logo-red.svg)
-# WooCommerceOoredooSMS
+# WooCommerceOoredooSMS by IslandBoyMv
 ### Wordpress Plugin to Send SMS to WooCommerce Orders using Ooredoo SMS Caster API
 ## HOW TO USE
 1. Download Zip File of the Plugin
