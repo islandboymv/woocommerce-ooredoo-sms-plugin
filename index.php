@@ -1,12 +1,11 @@
 <?php
 /*
 Plugin Name: WooCommerce Ooredoo SMS Plugin
-Description: Sends an SMS when a WooCommerce order status is set to "processing" using the Ooredoo SMS Gateway API.
-Version: 2.1
+Description: Sends an SMS when a WooCommerce order status changes (to processing, on-hold, or completed) using the Ooredoo SMS Gateway API. The access key is securely hashed in base64.
+Version: 3.0
 Author: Mifzaal Abdul Baari
 Author URI: https://islandboy.mv
 */
-
 
 function format_phone_number( $phone ) {
     // Remove any white space from the phone number
@@ -31,14 +30,13 @@ function format_phone_number( $phone ) {
     return $phone;
 }
 
-
 function send_sms_notification( $order_id, $old_status, $new_status ) {
     // Define an array of order statuses for which you want to send SMS
     $statuses_to_notify = array( 'on-hold', 'completed', 'processing' );
 
     // Check if the new order status is one of the specified statuses
     if ( in_array( $new_status, $statuses_to_notify ) ) {
-        // Replace "unknown" with your actual Bearer token and username and access key
+        // Get the Bearer token, username, and access key from the options
         $bearer_token = get_option( 'woocommerce_ooredoo_sms_bearer_token' );
         $username = get_option( 'woocommerce_ooredoo_sms_username' );
         $access_key = get_option( 'woocommerce_ooredoo_sms_access_key' );
@@ -71,6 +69,9 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
             // Set the batch variable as the phone number
             $batch = $phone;
 
+            // Encode the access key in base64
+            $hashed_access_key = base64_encode( $access_key );
+
             // Set the cURL options
             $options = array(
                 'headers' => array(
@@ -78,7 +79,7 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
                 ),
                 'body' => array(
                     'username' => $username,
-                    'access_key' => $access_key,
+                    'access_key' => $hashed_access_key,
                     'message' => $message,
                     'batch' => $batch
                 )
@@ -97,8 +98,6 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
     }
 }
 add_action( 'woocommerce_order_status_changed', 'send_sms_notification', 10, 3 );
-
-
 
 // Added Admin Page Capabilities
 
@@ -145,5 +144,3 @@ function woocommerce_ooredoo_sms_register_settings() {
     register_setting( 'woocommerce_ooredoo_sms_options', 'woocommerce_ooredoo_sms_access_key', 'sanitize_text_field' );
 }
 add_action( 'admin_init', 'woocommerce_ooredoo_sms_register_settings' );
-
-
