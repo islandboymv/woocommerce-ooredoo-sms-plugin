@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Ooredoo SMS Plugin
 Description: Sends an SMS when a WooCommerce order status changes using the Ooredoo SMS Gateway API.
-Version: 3.1.1
+Version: 3.1.4
 Author: Mifzaal Abdul Bari (IslandBoyMv)
 Author URI: https://islandboy.mv
 License: MIT
