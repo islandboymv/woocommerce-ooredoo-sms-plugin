@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Ooredoo SMS Plugin
 Description: Sends an SMS when a WooCommerce order status changes (to processing, on-hold, or completed) using the Ooredoo SMS Gateway API. The access key is securely hashed in base64.
-Version: 3.0
+Version: 3.1.1
 Author: Mifzaal Abdul Baari
 Author URI: https://islandboy.mv
 */
@@ -56,9 +56,9 @@ function send_sms_notification( $order_id, $old_status, $new_status ) {
 
         // Define dynamic messages based on the order status
         $messages = array(
-            'on-hold' => "Dear {$first_name},\nYour order #{$order_id} is on-hold awaiting payment verification.",
+            'on-hold' => "Dear {$first_name},\nWe have Received your order #{$order_id}.\n.",
+            'processing' => "Dear {$first_name},\nYour order #{$order_id} is ready for pickup at The Scout Association of Maldives.",
             'completed' => "Dear {$first_name},\nYour order #{$order_id} has been collected from The Scout Association of Maldives.",
-            'processing' => "Dear {$first_name},\nYour order #{$order_id} is ready for pickup at The Scout Association of Maldives."
         );
 
         // Set the message based on the order status
